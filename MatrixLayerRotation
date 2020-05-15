@@ -1,0 +1,94 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+
+
+typedef pair<int, int> coord;   
+
+int M, N, R;
+
+void addLayer(vector<coord> &layer, int r, int c, int len, int rAdd, int cAdd) {
+    while(len-- > 0) {
+        layer.push_back(make_pair(r, c));
+        r += rAdd;
+        c += cAdd;
+    }
+}
+
+
+vector<vector<int>> rotate(vector<vector<int>> matrix) {
+    vector<vector<int>> ret(M, vector<int>(N));
+    
+  
+    int nLayers = min(M, N)/2;
+    
+   
+    
+    int m = M, n = N;
+    for(int i = 0; i < nLayers; i++) {
+        vector<coord> layer;
+
+        // Top 
+        int r = i, c = i;
+        addLayer(layer, r, c, n-1, +0, +1);
+       
+        // Right 
+        r = layer.back().first;
+        c = layer.back().second+1;
+        addLayer(layer, r, c, m-1, +1, +0);
+
+        // Bottom 
+        r = layer.back().first+1;
+        c = layer.back().second;
+        addLayer(layer, r, c, n-1, 0, -1);
+        
+        // Left 
+        r = layer.back().first;
+        c = layer.back().second-1;
+        addLayer(layer, r, c, m-1, -1, 0);
+
+        
+       
+        
+        int sz = layer.size();
+        for(int id = 0; id < sz; id++) {
+            int r1 = layer[id].first, c1 = layer[id].second;
+            int r2 = layer[((id+R)%sz+sz)%sz].first, c2 = layer[((id+R)%sz+sz)%sz].second;
+            ret[r1][c1] = matrix[r2][c2];
+            printf("[(%d, %d) <- (%d, %d): %d], ", r1, c1, r2, c2, ret[r1][c1]);
+        }
+        cout << endl << endl;
+        
+        m -= 2;
+        n -= 2;
+    }
+
+    return ret;
+}
+
+int main()
+{
+   
+    cin >> M >> N >> R;
+    vector < vector<int> > matrix(M, vector<int>(N));
+    
+    for(int i = 0; i < M; i++) {
+        for(int j = 0; j < N; j++) {
+            cin >> matrix[i][j];
+        }
+    }
+    
+    
+    vector<vector<int> > ans = rotate(matrix);
+    
+   
+    for(int i = 0; i < M; i++) {
+        for(int j = 0; j < N; j++) {
+            cout << ans[i][j] << " ";
+        }
+        cout << endl;
+    }
+    
+
+    return 0;
+}
